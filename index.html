@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Di que sí — la pregunta con trampa</title>
+<meta name="description" content="Hazle la pregunta: el botón de SÍ funciona y el de NO es imposible de pulsar. Crea tu propia pregunta y manda el enlace.">
+<link rel="canonical" href="https://raulbaeza15.github.io/di-que-si/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Di que sí">
+<meta property="og:title" content="Di que sí — la pregunta con trampa">
+<meta property="og:description" content="El botón de SÍ funciona. El de NO, huye. Crea tu pregunta y manda el enlace.">
+<meta property="og:url" content="https://raulbaeza15.github.io/di-que-si/">
+<meta property="og:image" content="https://raulbaeza15.github.io/di-que-si/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#fff3e8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Di que sí","url":"https://raulbaeza15.github.io/di-que-si/","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":["es","en","fr","de","it","pt","tr"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Raúl Baeza Osuna"}}
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #fff3e8;
+    color: #3b2a25;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .langbar {
+    position: fixed; top: 10px; right: 10px; z-index: 50;
+  }
+  .langbar select {
+    font: inherit; font-size: 14px; padding: 6px 10px;
+    border: 2px solid #3b2a25; border-radius: 999px;
+    background: #fff; color: #3b2a25; cursor: pointer;
+  }
+  main {
+    flex: 1; width: 100%; max-width: 560px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 20px 90px; text-align: center;
+  }
+  .emoji { font-size: clamp(56px, 18vw, 96px); line-height: 1.1; animation: bob 2.2s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-10px) rotate(4deg);} }
+  h1 {
+    font-size: clamp(26px, 7.5vw, 40px); line-height: 1.2;
+    margin: 22px 0 8px; font-weight: 800; letter-spacing: -0.5px;
+    max-width: 16em; overflow-wrap: break-word;
+  }
+  .sub { font-size: clamp(15px, 4vw, 18px); color: #8a6f66; margin-bottom: 34px; }
+  .btns { display: flex; gap: 18px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  button { font: inherit; cursor: pointer; }
+  .btn-yes {
+    background: #e0455a; color: #fff; border: none;
+    font-size: 22px; font-weight: 800; letter-spacing: 1px;
+    padding: 16px 44px; border-radius: 999px;
+    box-shadow: 0 6px 0 #a92c3f, 0 10px 24px rgba(224,69,90,.35);
+    transition: transform .18s ease, box-shadow .18s ease;
+    touch-action: manipulation;
+  }
+  .btn-yes:active { transform: translateY(4px); box-shadow: 0 2px 0 #a92c3f; }
+  .btn-no {
+    background: #fff; color: #3b2a25; border: 3px solid #3b2a25;
+    font-size: 22px; font-weight: 800; letter-spacing: 1px;
+    padding: 14px 40px; border-radius: 999px;
+    box-shadow: 0 6px 0 #d9c8bd;
+    transition: left .16s ease-out, top .16s ease-out, transform .16s ease;
+    touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  }
+  .btn-no.fleeing { position: fixed; z-index: 40; margin: 0; }
+  .makelink { margin-top: 56px; font-size: 15px; }
+  .makelink a, .backlink a { color: #e0455a; font-weight: 700; text-decoration: none; border-bottom: 2px solid #f3b3bd; }
+  .hidden { display: none !important; }
+  /* create view */
+  .create input[type=text] {
+    width: 100%; max-width: 440px; font: inherit; font-size: 17px;
+    padding: 14px 18px; border: 3px solid #3b2a25; border-radius: 16px;
+    background: #fff; color: #3b2a25; margin: 18px 0 14px;
+  }
+  .btn-create {
+    background: #3b2a25; color: #fff3e8; border: none;
+    font-size: 18px; font-weight: 700; padding: 14px 34px; border-radius: 999px;
+    box-shadow: 0 5px 0 #191008; touch-action: manipulation;
+  }
+  .btn-create:active { transform: translateY(3px); box-shadow: 0 2px 0 #191008; }
+  .linkbox { margin-top: 26px; width: 100%; max-width: 440px; }
+  .linkbox .row { display: flex; gap: 8px; }
+  .linkbox input[readonly] {
+    flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 12px 14px;
+    border: 2px dashed #b79c8f; border-radius: 12px; background: #fffaf5; color: #6b544b;
+  }
+  .btn-copy {
+    background: #e0455a; color: #fff; border: none; font-weight: 700; font-size: 15px;
+    padding: 0 18px; border-radius: 12px; white-space: nowrap; touch-action: manipulation;
+  }
+  .hint { margin-top: 10px; font-size: 13px; color: #8a6f66; }
+  /* yes view */
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+  .yes-title { font-size: clamp(30px, 9vw, 46px); font-weight: 800; margin: 18px 0 10px; }
+  .backlink { margin-top: 48px; font-size: 15px; }
+  footer { padding: 14px; font-size: 12px; color: #b79c8f; text-align: center; }
+</style>
+</head>
+<body>
+<div class="langbar"><select id="lang" aria-label="Language"></select></div>
+
+<main id="view-question">
+  <div class="emoji" id="q-emoji">🥺👉👈</div>
+  <h1 id="q-text"></h1>
+  <p class="sub" id="q-sub"></p>
+  <div class="btns">
+    <button class="btn-yes" id="btn-yes"></button>
+    <button class="btn-no" id="btn-no"></button>
+  </div>
+  <p class="makelink"><a href="#" id="go-create"></a></p>
+</main>
+
+<main id="view-create" class="hidden create">
+  <div class="emoji">😈</div>
+  <h1 id="c-title"></h1>
+  <p class="sub" id="c-sub" style="max-width:26em"></p>
+  <input type="text" id="c-input" maxlength="140" autocomplete="off">
+  <button class="btn-create" id="c-btn"></button>
+  <div class="linkbox hidden" id="c-linkbox">
+    <div class="row">
+      <input readonly id="c-link">
+      <button class="btn-copy" id="c-copy"></button>
+    </div>
+    <p class="hint" id="c-hint"></p>
+  </div>
+  <p class="backlink"><a href="#" id="go-back"></a></p>
+</main>
+
+<main id="view-yes" class="hidden">
+  <canvas id="confetti"></canvas>
+  <div class="emoji">🎉🥳</div>
+  <h1 class="yes-title" id="y-title"></h1>
+  <p class="sub" id="y-sub"></p>
+  <p class="backlink"><a href="#" id="go-again"></a></p>
+</main>
+
+<footer>di-que-si · raulbaeza15.github.io</footer>
+
+<script>
+(function(){
+"use strict";
+var LANGS = ["es","en","fr","de","it","pt","tr"];
+var T = {
+es:{q:"¿Quieres tener una cita conmigo?",sub:"Piénsatelo bien… aunque da igual, solo hay una respuesta posible.",yes:"SÍ",no:["NO","¿Seguro?","Piénsalo…","Ni lo intentes","Imposible 😜","Hoy no"],yT:"¡Sabía que dirías que sí!",yS:"Nos vemos pronto, entonces. Trae algo rico.",make:"Crea tu propia pregunta →",cT:"Crea tu propia pregunta",cS:"Escribe tu frase, genera el enlace y mándaselo a la víctima. El botón de NO seguirá huyendo.",ph:"Hola María, ¿quieres tener una cita conmigo?",cB:"Crear mi enlace",copy:"Copiar",copied:"¡Copiado! Ahora mándalo 😏",back:"← Volver",again:"Hacer otra pregunta",title:"Di que sí — la pregunta con trampa"},
+en:{q:"Will you go on a date with me?",sub:"Think it over… not that it matters, there's only one possible answer.",yes:"YES",no:["NO","Are you sure?","Think again…","Don't even try","Nope 😜","Not today"],yT:"I knew you'd say yes!",yS:"See you soon, then. Bring something tasty.",make:"Make your own question →",cT:"Make your own question",cS:"Write your line, get the link and send it to your victim. The NO button will still run away.",ph:"Hi Maria, will you go on a date with me?",cB:"Create my link",copy:"Copy",copied:"Copied! Now send it 😏",back:"← Back",again:"Ask another question",title:"Say Yes — the trick question"},
+fr:{q:"Tu veux un rencard avec moi ?",sub:"Réfléchis bien… enfin, ça ne change rien, il n'y a qu'une réponse possible.",yes:"OUI",no:["NON","T'es sûr·e ?","Réfléchis…","N'essaie même pas","Impossible 😜","Pas aujourd'hui"],yT:"Je savais que tu dirais oui !",yS:"À très vite, alors. Apporte quelque chose de bon.",make:"Crée ta propre question →",cT:"Crée ta propre question",cS:"Écris ta phrase, génère le lien et envoie-le à ta victime. Le bouton NON continuera de fuir.",ph:"Salut Maria, tu veux un rencard avec moi ?",cB:"Créer mon lien",copy:"Copier",copied:"Copié ! Envoie-le 😏",back:"← Retour",again:"Poser une autre question",title:"Dis oui — la question piège"},
+de:{q:"Gehst du mit mir auf ein Date?",sub:"Überleg es dir gut… obwohl, ist egal, es gibt nur eine mögliche Antwort.",yes:"JA",no:["NEIN","Sicher?","Überleg's dir…","Versuch's gar nicht","Unmöglich 😜","Heute nicht"],yT:"Ich wusste, du sagst ja!",yS:"Bis bald dann. Bring was Leckeres mit.",make:"Stell deine eigene Frage →",cT:"Stell deine eigene Frage",cS:"Schreib deinen Satz, erzeuge den Link und schick ihn deinem Opfer. Der NEIN-Button flüchtet weiter.",ph:"Hi Maria, gehst du mit mir auf ein Date?",cB:"Link erstellen",copy:"Kopieren",copied:"Kopiert! Ab damit 😏",back:"← Zurück",again:"Neue Frage stellen",title:"Sag Ja — die Fangfrage"},
+it:{q:"Vuoi uscire con me?",sub:"Pensaci bene… tanto non cambia, c'è solo una risposta possibile.",yes:"SÌ",no:["NO","Sicuro/a?","Pensaci…","Non provarci","Impossibile 😜","Oggi no"],yT:"Sapevo che avresti detto di sì!",yS:"A presto, allora. Porta qualcosa di buono.",make:"Crea la tua domanda →",cT:"Crea la tua domanda",cS:"Scrivi la tua frase, genera il link e mandalo alla vittima. Il pulsante NO continuerà a scappare.",ph:"Ciao Maria, vuoi uscire con me?",cB:"Crea il mio link",copy:"Copia",copied:"Copiato! Ora invialo 😏",back:"← Indietro",again:"Fai un'altra domanda",title:"Di' di sì — la domanda trabocchetto"},
+pt:{q:"Queres sair comigo?",sub:"Pensa bem… não que importe, só há uma resposta possível.",yes:"SIM",no:["NÃO","Tens a certeza?","Pensa lá…","Nem tentes","Impossível 😜","Hoje não"],yT:"Sabia que ias dizer que sim!",yS:"Até já, então. Traz algo bom.",make:"Cria a tua própria pergunta →",cT:"Cria a tua própria pergunta",cS:"Escreve a tua frase, gera o link e envia-o à vítima. O botão NÃO vai continuar a fugir.",ph:"Olá Maria, queres sair comigo?",cB:"Criar o meu link",copy:"Copiar",copied:"Copiado! Agora envia 😏",back:"← Voltar",again:"Fazer outra pergunta",title:"Diz que sim — a pergunta armadilhada"},
+tr:{q:"Benimle bir randevuya çıkar mısın?",sub:"İyi düşün… aslında fark etmez, tek bir cevap var.",yes:"EVET",no:["HAYIR","Emin misin?","Bir düşün…","Hiç deneme","İmkansız 😜","Bugün olmaz"],yT:"Evet diyeceğini biliyordum!",yS:"Görüşürüz o zaman. Güzel bir şeyler getir.",make:"Kendi sorunu yarat →",cT:"Kendi sorunu yarat",cS:"Cümleni yaz, linki oluştur ve kurbanına gönder. HAYIR düğmesi kaçmaya devam edecek.",ph:"Selam Maria, benimle bir randevuya çıkar mısın?",cB:"Linkimi oluştur",copy:"Kopyala",copied:"Kopyalandı! Şimdi gönder 😏",back:"← Geri",again:"Başka bir soru sor",title:"Evet de — tuzak soru"}
+};
+var $ = function(id){ return document.getElementById(id); };
+var lang = (function(){
+  try { var s = localStorage.getItem("dqs-lang"); if (s && T[s]) return s; } catch(e){}
+  var n = (navigator.language || "es").slice(0,2).toLowerCase();
+  return T[n] ? n : "es";
+})();
+var dodgeCount = 0, customQ = null;
+
+function t(){ return T[lang]; }
+function applyLang(){
+  var d = t();
+  document.documentElement.lang = lang;
+  document.title = d.title;
+  $("q-sub").textContent = d.sub;
+  $("btn-yes").textContent = d.yes;
+  $("btn-no").textContent = d.no[Math.min(dodgeCount, d.no.length-1)];
+  $("go-create").textContent = d.make;
+  $("c-title").textContent = d.cT;
+  $("c-sub").textContent = d.cS;
+  $("c-input").placeholder = d.ph;
+  $("c-btn").textContent = d.cB;
+  $("c-copy").textContent = d.copy;
+  $("c-hint").textContent = "";
+  $("go-back").textContent = d.back;
+  $("go-again").textContent = d.again;
+  $("y-title").textContent = d.yT;
+  $("y-sub").textContent = d.yS;
+  renderQuestion();
+}
+function renderQuestion(){ $("q-text").textContent = customQ || t().q; }
+
+var sel = $("lang");
+LANGS.forEach(function(l){ var o=document.createElement("option"); o.value=l; o.textContent=l.toUpperCase(); sel.appendChild(o); });
+sel.value = lang;
+sel.addEventListener("change", function(){
+  lang = sel.value;
+  try { localStorage.setItem("dqs-lang", lang); } catch(e){}
+  applyLang();
+});
+
+/* --- views --- */
+function show(id){
+  ["view-question","view-create","view-yes"].forEach(function(v){ $(v).classList.toggle("hidden", v!==id); });
+}
+$("go-create").addEventListener("click", function(e){ e.preventDefault(); show("view-create"); $("c-input").focus(); });
+$("go-back").addEventListener("click", function(e){ e.preventDefault(); show("view-question"); });
+$("go-again").addEventListener("click", function(e){ e.preventDefault(); stopConfetti(); resetNo(); show("view-question"); });
+
+/* --- custom phrase in URL hash (#p=base64url) --- */
+function b64urlEncode(str){
+  var bytes = new TextEncoder().encode(str), bin = "";
+  for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function b64urlDecode(s){
+  s = s.replace(/-/g,"+").replace(/_/g,"/");
+  while (s.length % 4) s += "=";
+  var bin = atob(s), bytes = new Uint8Array(bin.length);
+  for (var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function readHash(){
+  var m = location.hash.match(/[#&]p=([A-Za-z0-9\-_]+)/);
+  if (!m) return null;
+  try { var s = b64urlDecode(m[1]).trim(); return s ? s.slice(0,140) : null; } catch(e){ return null; }
+}
+
+/* --- create link --- */
+$("c-btn").addEventListener("click", function(){
+  var v = $("c-input").value.trim();
+  if (!v) { $("c-input").focus(); return; }
+  var url = location.origin + location.pathname + "#p=" + b64urlEncode(v);
+  $("c-link").value = url;
+  $("c-linkbox").classList.remove("hidden");
+  $("c-hint").textContent = "";
+});
+$("c-copy").addEventListener("click", function(){
+  var inp = $("c-link");
+  function done(){ $("c-hint").textContent = t().copied; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(inp.value).then(done, function(){ inp.select(); document.execCommand("copy"); done(); });
+  } else { inp.select(); document.execCommand("copy"); done(); }
+});
+
+/* --- the fleeing NO --- */
+var noBtn = $("btn-no"), yesBtn = $("btn-yes"), fleeing = false, yesScale = 1;
+function resetNo(){
+  fleeing = false; dodgeCount = 0; yesScale = 1;
+  noBtn.classList.remove("fleeing");
+  noBtn.style.left = noBtn.style.top = "";
+  yesBtn.style.transform = "";
+  noBtn.textContent = t().no[0];
+}
+function dodge(){
+  var r = noBtn.getBoundingClientRect();
+  if (!fleeing) {
+    fleeing = true;
+    noBtn.classList.add("fleeing");
+    noBtn.style.left = r.left + "px";
+    noBtn.style.top = r.top + "px";
+  }
+  var pad = 12, w = r.width, h = r.height;
+  var maxX = Math.max(pad, window.innerWidth - w - pad);
+  var maxY = Math.max(pad, window.innerHeight - h - pad);
+  var x = pad + Math.random() * (maxX - pad);
+  var y = pad + Math.random() * (maxY - pad);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+  dodgeCount++;
+  var labels = t().no;
+  noBtn.textContent = labels[Math.min(dodgeCount, labels.length-1)];
+  if (yesScale < 1.6) { yesScale += 0.08; yesBtn.style.transform = "scale(" + yesScale.toFixed(2) + ")"; }
+}
+noBtn.addEventListener("pointerenter", function(e){ if (e.pointerType !== "touch") dodge(); });
+noBtn.addEventListener("touchstart", function(e){ e.preventDefault(); dodge(); }, {passive:false});
+noBtn.addEventListener("click", function(e){ e.preventDefault(); dodge(); });
+document.addEventListener("touchmove", function(e){
+  if (!e.touches || !e.touches.length) return;
+  var r = noBtn.getBoundingClientRect();
+  var cx = r.left + r.width/2, cy = r.top + r.height/2;
+  for (var i=0;i<e.touches.length;i++){
+    var dx = e.touches[i].clientX - cx, dy = e.touches[i].clientY - cy;
+    if (dx*dx + dy*dy < 110*110) { dodge(); break; }
+  }
+}, {passive:true});
+
+/* --- YES: celebration + confetti --- */
+var confettiRunning = false, confettiRAF = null;
+function stopConfetti(){
+  confettiRunning = false;
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+  var c = $("confetti"); c.getContext("2d").clearRect(0,0,c.width,c.height);
+}
+function runConfetti(){
+  var c = $("confetti"), ctx = c.getContext("2d");
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  var colors = ["#e0455a","#f4a259","#f7d154","#5aa9e6","#7fc8a9","#c780fa"];
+  var parts = [];
+  for (var i=0;i<160;i++) parts.push({
+    x: Math.random()*c.width, y: -20 - Math.random()*c.height*0.5,
+    w: 6+Math.random()*6, h: 8+Math.random()*8,
+    vy: 2+Math.random()*3, vx: -1.5+Math.random()*3,
+    rot: Math.random()*Math.PI, vr: -0.1+Math.random()*0.2,
+    color: colors[i%colors.length]
+  });
+  confettiRunning = true;
+  (function frame(){
+    if (!confettiRunning) return;
+    ctx.clearRect(0,0,c.width,c.height);
+    parts.forEach(function(p){
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if (p.y > c.height + 20) { p.y = -20; p.x = Math.random()*c.width; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    confettiRAF = requestAnimationFrame(frame);
+  })();
+}
+yesBtn.addEventListener("click", function(){
+  show("view-yes");
+  runConfetti();
+});
+
+/* --- init --- */
+customQ = readHash();
+window.addEventListener("hashchange", function(){ customQ = readHash(); resetNo(); renderQuestion(); show("view-question"); });
+applyLang();
+show("view-question");
+})();
+</script>
+</body>
+</html>
