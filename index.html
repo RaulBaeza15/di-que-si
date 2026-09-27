@@ -74,6 +74,7 @@
     transition: left .16s ease-out, top .16s ease-out, transform .16s ease;
     touch-action: manipulation; user-select: none; -webkit-user-select: none;
   }
+  .btns button { max-width: 100%; overflow-wrap: anywhere; }
   .btn-no.fleeing { position: fixed; z-index: 40; margin: 0; }
   .makelink { margin-top: 56px; font-size: 15px; }
   .makelink a, .backlink a { color: #e0455a; font-weight: 700; text-decoration: none; border-bottom: 2px solid #f3b3bd; }
@@ -130,6 +131,10 @@
   <input type="text" id="c-input" maxlength="140" autocomplete="off">
   <label class="response-label" id="c-response-label" for="c-response"></label>
   <input type="text" id="c-response" maxlength="140" autocomplete="off">
+  <label class="response-label" id="c-yes-label" for="c-yes"></label>
+  <input type="text" id="c-yes" maxlength="40" autocomplete="off">
+  <label class="response-label" id="c-no-label" for="c-no"></label>
+  <input type="text" id="c-no" maxlength="40" autocomplete="off">
   <button class="btn-create" id="c-btn"></button>
   <div class="linkbox hidden" id="c-linkbox">
     <div class="row">
@@ -156,13 +161,13 @@
 "use strict";
 var LANGS = ["es","en","fr","de","it","pt","tr"];
 var T = {
-es:{q:"¿Quieres tener una cita conmigo?",sub:"Piénsatelo bien… aunque da igual, solo hay una respuesta posible.",yes:"SÍ",no:["NO","¿Seguro?","Piénsalo…","Ni lo intentes","Imposible 😜","Hoy no","Casi…","Qué va 😂","Error 404","Lo siento, no","Vuelve a intentarlo","Nunca jamás"],yT:"¡Sabía que dirías que sí!",yS:"Nos vemos pronto, entonces. Trae algo rico.",make:"Crea tu propia pregunta →",cT:"Crea tu propia pregunta",cS:"Escribe tu frase, genera el enlace y mándaselo a la víctima. El botón de NO seguirá huyendo.",ph:"Hola, ¿quieres tomar algo conmigo?",rL:"Respuesta al pulsar SÍ (opcional)",rH:"Si dejas este campo vacío, aparecerá la celebración de siempre.",rP:"¡Genial! Nos vemos pronto.",cB:"Crear mi enlace",copy:"Copiar",copied:"¡Copiado! Ahora mándalo 😏",back:"← Volver",again:"Hacer otra pregunta",title:"Di que sí — la pregunta con trampa"},
-en:{q:"Will you go on a date with me?",sub:"Think it over… not that it matters, there's only one possible answer.",yes:"YES",no:["NO","Are you sure?","Think again…","Don't even try","Nope 😜","Not today","Almost…","Nah 😂","Error 404","Sorry, no","Try again","Never ever"],yT:"I knew you'd say yes!",yS:"See you soon, then. Bring something tasty.",make:"Make your own question →",cT:"Make your own question",cS:"Write your line, get the link and send it to your victim. The NO button will still run away.",ph:"Hey, want to grab a drink with me?",rL:"Message after YES (optional)",rH:"Leave this blank for the usual celebration.",rP:"Awesome! See you soon.",cB:"Create my link",copy:"Copy",copied:"Copied! Now send it 😏",back:"← Back",again:"Ask another question",title:"Say Yes — the trick question"},
-fr:{q:"Tu veux un rencard avec moi ?",sub:"Réfléchis bien… enfin, ça ne change rien, il n'y a qu'une réponse possible.",yes:"OUI",no:["NON","T'es sûr·e ?","Réfléchis…","N'essaie même pas","Impossible 😜","Pas aujourd'hui","Presque…","Non non 😂","Erreur 404","Désolé·e, non","Réessaie","Jamais de la vie"],yT:"Je savais que tu dirais oui !",yS:"À très vite, alors. Apporte quelque chose de bon.",make:"Crée ta propre question →",cT:"Crée ta propre question",cS:"Écris ta phrase, génère le lien et envoie-le à ta victime. Le bouton NON continuera de fuir.",ph:"Salut, ça te dit qu’on aille boire un verre ensemble ?",rL:"Message après OUI (facultatif)",rH:"Laisse ce champ vide pour garder la fête habituelle.",rP:"Super ! À bientôt.",cB:"Créer mon lien",copy:"Copier",copied:"Copié ! Envoie-le 😏",back:"← Retour",again:"Poser une autre question",title:"Dis oui — la question piège"},
-de:{q:"Gehst du mit mir auf ein Date?",sub:"Überleg es dir gut… obwohl, ist egal, es gibt nur eine mögliche Antwort.",yes:"JA",no:["NEIN","Sicher?","Überleg's dir…","Versuch's gar nicht","Unmöglich 😜","Heute nicht","Fast…","Nö 😂","Fehler 404","Sorry, nein","Versuch's nochmal","Niemals"],yT:"Ich wusste, du sagst ja!",yS:"Bis bald dann. Bring was Leckeres mit.",make:"Stell deine eigene Frage →",cT:"Stell deine eigene Frage",cS:"Schreib deinen Satz, erzeuge den Link und schick ihn deinem Opfer. Der NEIN-Button flüchtet weiter.",ph:"Hey, hast du Lust, mit mir etwas trinken zu gehen?",rL:"Nachricht nach JA (optional)",rH:"Lass das Feld leer für die übliche Feier.",rP:"Super! Bis bald.",cB:"Link erstellen",copy:"Kopieren",copied:"Kopiert! Ab damit 😏",back:"← Zurück",again:"Neue Frage stellen",title:"Sag Ja — die Fangfrage"},
-it:{q:"Vuoi uscire con me?",sub:"Pensaci bene… tanto non cambia, c'è solo una risposta possibile.",yes:"SÌ",no:["NO","Sicuro/a?","Pensaci…","Non provarci","Impossibile 😜","Oggi no","Quasi…","Ma no 😂","Errore 404","Mi dispiace, no","Riprova","Mai e poi mai"],yT:"Sapevo che avresti detto di sì!",yS:"A presto, allora. Porta qualcosa di buono.",make:"Crea la tua domanda →",cT:"Crea la tua domanda",cS:"Scrivi la tua frase, genera il link e mandalo alla vittima. Il pulsante NO continuerà a scappare.",ph:"Ciao, ti va di andare a bere qualcosa insieme?",rL:"Messaggio dopo SÌ (facoltativo)",rH:"Lascia vuoto per la solita festa.",rP:"Fantastico! A presto.",cB:"Crea il mio link",copy:"Copia",copied:"Copiato! Ora invialo 😏",back:"← Indietro",again:"Fai un'altra domanda",title:"Di' di sì — la domanda trabocchetto"},
-pt:{q:"Queres sair comigo?",sub:"Pensa bem… não que importe, só há uma resposta possível.",yes:"SIM",no:["NÃO","Tens a certeza?","Pensa lá…","Nem tentes","Impossível 😜","Hoje não","Quase…","Nem pensar 😂","Erro 404","Desculpa, não","Tenta outra vez","Nunca, jamais"],yT:"Sabia que ias dizer que sim!",yS:"Até já, então. Traz algo bom.",make:"Cria a tua própria pergunta →",cT:"Cria a tua própria pergunta",cS:"Escreve a tua frase, gera o link e envia-o à vítima. O botão NÃO vai continuar a fugir.",ph:"Olá, queres ir beber qualquer coisa comigo?",rL:"Mensagem depois de SIM (opcional)",rH:"Deixa em branco para a celebração habitual.",rP:"Boa! Até breve.",cB:"Criar o meu link",copy:"Copiar",copied:"Copiado! Agora envia 😏",back:"← Voltar",again:"Fazer outra pergunta",title:"Diz que sim — a pergunta armadilhada"},
-tr:{q:"Benimle bir randevuya çıkar mısın?",sub:"İyi düşün… aslında fark etmez, tek bir cevap var.",yes:"EVET",no:["HAYIR","Emin misin?","Bir düşün…","Hiç deneme","İmkansız 😜","Bugün olmaz","Az kaldı…","Yok artık 😂","Hata 404","Üzgünüm, olmaz","Tekrar dene","Asla"],yT:"Evet diyeceğini biliyordum!",yS:"Görüşürüz o zaman. Güzel bir şeyler getir.",make:"Kendi sorunu yarat →",cT:"Kendi sorunu yarat",cS:"Cümleni yaz, linki oluştur ve kurbanına gönder. HAYIR düğmesi kaçmaya devam edecek.",ph:"Selam, benimle bir şeyler içmeye gelir misin?",rL:"EVET sonrası mesaj (isteğe bağlı)",rH:"Normal kutlamayı görmek için boş bırak.",rP:"Harika! Görüşürüz.",cB:"Linkimi oluştur",copy:"Kopyala",copied:"Kopyalandı! Şimdi gönder 😏",back:"← Geri",again:"Başka bir soru sor",title:"Evet de — tuzak soru"}
+es:{q:"¿Quieres tener una cita conmigo?",sub:"Piénsatelo bien… aunque da igual, solo hay una respuesta posible.",yes:"SÍ",no:["NO","¿Seguro?","Piénsalo…","Ni lo intentes","Imposible 😜","Hoy no","Casi…","Qué va 😂","Error 404","Lo siento, no","Vuelve a intentarlo","Nunca jamás"],yT:"¡Sabía que dirías que sí!",yS:"Nos vemos pronto, entonces. Trae algo rico.",make:"Crea tu propia pregunta →",cT:"Crea tu propia pregunta",cS:"Escribe tu frase, genera el enlace y mándaselo a la víctima. El botón de NO seguirá huyendo.",ph:"Hola, ¿quieres tomar algo conmigo?",rL:"Respuesta al pulsar SÍ (opcional)",rH:"Si dejas este campo vacío, aparecerá la celebración de siempre.",rP:"¡Genial! Nos vemos pronto.",yL:"Texto del botón SÍ (opcional)",nL:"Texto del botón NO (opcional)",cB:"Crear mi enlace",copy:"Copiar",copied:"¡Copiado! Ahora mándalo 😏",back:"← Volver",again:"Hacer otra pregunta",title:"Di que sí — la pregunta con trampa"},
+en:{q:"Will you go on a date with me?",sub:"Think it over… not that it matters, there's only one possible answer.",yes:"YES",no:["NO","Are you sure?","Think again…","Don't even try","Nope 😜","Not today","Almost…","Nah 😂","Error 404","Sorry, no","Try again","Never ever"],yT:"I knew you'd say yes!",yS:"See you soon, then. Bring something tasty.",make:"Make your own question →",cT:"Make your own question",cS:"Write your line, get the link and send it to your victim. The NO button will still run away.",ph:"Hey, want to grab a drink with me?",rL:"Message after YES (optional)",rH:"Leave this blank for the usual celebration.",rP:"Awesome! See you soon.",yL:"YES button text (optional)",nL:"NO button text (optional)",cB:"Create my link",copy:"Copy",copied:"Copied! Now send it 😏",back:"← Back",again:"Ask another question",title:"Say Yes — the trick question"},
+fr:{q:"Tu veux un rencard avec moi ?",sub:"Réfléchis bien… enfin, ça ne change rien, il n'y a qu'une réponse possible.",yes:"OUI",no:["NON","T'es sûr·e ?","Réfléchis…","N'essaie même pas","Impossible 😜","Pas aujourd'hui","Presque…","Non non 😂","Erreur 404","Désolé·e, non","Réessaie","Jamais de la vie"],yT:"Je savais que tu dirais oui !",yS:"À très vite, alors. Apporte quelque chose de bon.",make:"Crée ta propre question →",cT:"Crée ta propre question",cS:"Écris ta phrase, génère le lien et envoie-le à ta victime. Le bouton NON continuera de fuir.",ph:"Salut, ça te dit qu’on aille boire un verre ensemble ?",rL:"Message après OUI (facultatif)",rH:"Laisse ce champ vide pour garder la fête habituelle.",rP:"Super ! À bientôt.",yL:"Texte du bouton OUI (facultatif)",nL:"Texte du bouton NON (facultatif)",cB:"Créer mon lien",copy:"Copier",copied:"Copié ! Envoie-le 😏",back:"← Retour",again:"Poser une autre question",title:"Dis oui — la question piège"},
+de:{q:"Gehst du mit mir auf ein Date?",sub:"Überleg es dir gut… obwohl, ist egal, es gibt nur eine mögliche Antwort.",yes:"JA",no:["NEIN","Sicher?","Überleg's dir…","Versuch's gar nicht","Unmöglich 😜","Heute nicht","Fast…","Nö 😂","Fehler 404","Sorry, nein","Versuch's nochmal","Niemals"],yT:"Ich wusste, du sagst ja!",yS:"Bis bald dann. Bring was Leckeres mit.",make:"Stell deine eigene Frage →",cT:"Stell deine eigene Frage",cS:"Schreib deinen Satz, erzeuge den Link und schick ihn deinem Opfer. Der NEIN-Button flüchtet weiter.",ph:"Hey, hast du Lust, mit mir etwas trinken zu gehen?",rL:"Nachricht nach JA (optional)",rH:"Lass das Feld leer für die übliche Feier.",rP:"Super! Bis bald.",yL:"Text für den JA-Button (optional)",nL:"Text für den NEIN-Button (optional)",cB:"Link erstellen",copy:"Kopieren",copied:"Kopiert! Ab damit 😏",back:"← Zurück",again:"Neue Frage stellen",title:"Sag Ja — die Fangfrage"},
+it:{q:"Vuoi uscire con me?",sub:"Pensaci bene… tanto non cambia, c'è solo una risposta possibile.",yes:"SÌ",no:["NO","Sicuro/a?","Pensaci…","Non provarci","Impossibile 😜","Oggi no","Quasi…","Ma no 😂","Errore 404","Mi dispiace, no","Riprova","Mai e poi mai"],yT:"Sapevo che avresti detto di sì!",yS:"A presto, allora. Porta qualcosa di buono.",make:"Crea la tua domanda →",cT:"Crea la tua domanda",cS:"Scrivi la tua frase, genera il link e mandalo alla vittima. Il pulsante NO continuerà a scappare.",ph:"Ciao, ti va di andare a bere qualcosa insieme?",rL:"Messaggio dopo SÌ (facoltativo)",rH:"Lascia vuoto per la solita festa.",rP:"Fantastico! A presto.",yL:"Testo del pulsante SÌ (facoltativo)",nL:"Testo del pulsante NO (facoltativo)",cB:"Crea il mio link",copy:"Copia",copied:"Copiato! Ora invialo 😏",back:"← Indietro",again:"Fai un'altra domanda",title:"Di' di sì — la domanda trabocchetto"},
+pt:{q:"Queres sair comigo?",sub:"Pensa bem… não que importe, só há uma resposta possível.",yes:"SIM",no:["NÃO","Tens a certeza?","Pensa lá…","Nem tentes","Impossível 😜","Hoje não","Quase…","Nem pensar 😂","Erro 404","Desculpa, não","Tenta outra vez","Nunca, jamais"],yT:"Sabia que ias dizer que sim!",yS:"Até já, então. Traz algo bom.",make:"Cria a tua própria pergunta →",cT:"Cria a tua própria pergunta",cS:"Escreve a tua frase, gera o link e envia-o à vítima. O botão NÃO vai continuar a fugir.",ph:"Olá, queres ir beber qualquer coisa comigo?",rL:"Mensagem depois de SIM (opcional)",rH:"Deixa em branco para a celebração habitual.",rP:"Boa! Até breve.",yL:"Texto do botão SIM (opcional)",nL:"Texto do botão NÃO (opcional)",cB:"Criar o meu link",copy:"Copiar",copied:"Copiado! Agora envia 😏",back:"← Voltar",again:"Fazer outra pergunta",title:"Diz que sim — a pergunta armadilhada"},
+tr:{q:"Benimle bir randevuya çıkar mısın?",sub:"İyi düşün… aslında fark etmez, tek bir cevap var.",yes:"EVET",no:["HAYIR","Emin misin?","Bir düşün…","Hiç deneme","İmkansız 😜","Bugün olmaz","Az kaldı…","Yok artık 😂","Hata 404","Üzgünüm, olmaz","Tekrar dene","Asla"],yT:"Evet diyeceğini biliyordum!",yS:"Görüşürüz o zaman. Güzel bir şeyler getir.",make:"Kendi sorunu yarat →",cT:"Kendi sorunu yarat",cS:"Cümleni yaz, linki oluştur ve kurbanına gönder. HAYIR düğmesi kaçmaya devam edecek.",ph:"Selam, benimle bir şeyler içmeye gelir misin?",rL:"EVET sonrası mesaj (isteğe bağlı)",rH:"Normal kutlamayı görmek için boş bırak.",rP:"Harika! Görüşürüz.",yL:"EVET düğmesi metni (isteğe bağlı)",nL:"HAYIR düğmesi metni (isteğe bağlı)",cB:"Linkimi oluştur",copy:"Kopyala",copied:"Kopyalandı! Şimdi gönder 😏",back:"← Geri",again:"Başka bir soru sor",title:"Evet de — tuzak soru"}
 };
 var $ = function(id){ return document.getElementById(id); };
 var lang = (function(){
@@ -170,7 +175,7 @@ var lang = (function(){
   var n = (navigator.language || "es").slice(0,2).toLowerCase();
   return T[n] ? n : "es";
 })();
-var dodgeCount = 0, customQ = null, customR = null;
+var dodgeCount = 0, customQ = null, customR = null, customYes = null, customNo = null;
 
 function t(){ return T[lang]; }
 function applyLang(){
@@ -178,8 +183,8 @@ function applyLang(){
   document.documentElement.lang = lang;
   document.title = d.title;
   $("q-sub").textContent = d.sub;
-  $("btn-yes").textContent = d.yes;
-  $("btn-no").textContent = d.no[dodgeCount % d.no.length];
+  $("btn-yes").textContent = customYes || d.yes;
+  $("btn-no").textContent = dodgeCount ? d.no[dodgeCount % d.no.length] : (customNo || d.no[0]);
   $("go-create").textContent = d.make;
   $("c-title").textContent = d.cT;
   $("c-sub").textContent = d.cS;
@@ -187,6 +192,10 @@ function applyLang(){
   $("c-response-label").textContent = d.rL;
   $("c-response").placeholder = d.rP;
   $("c-response").setAttribute("aria-label", d.rL + ". " + d.rH);
+  $("c-yes-label").textContent = d.yL;
+  $("c-no-label").textContent = d.nL;
+  $("c-yes").placeholder = d.yes;
+  $("c-no").placeholder = d.no[0];
   $("c-btn").textContent = d.cB;
   $("c-copy").textContent = d.copy;
   $("c-hint").textContent = "";
@@ -215,7 +224,7 @@ $("go-create").addEventListener("click", function(e){ e.preventDefault(); show("
 $("go-back").addEventListener("click", function(e){ e.preventDefault(); show("view-question"); });
 $("go-again").addEventListener("click", function(e){ e.preventDefault(); stopConfetti(); resetNo(); show("view-question"); });
 
-/* --- custom question and optional YES response in URL hash (#p=...&r=...) --- */
+/* --- custom question, response and button labels in URL hash (#p=...&r=...&y=...&n=...) --- */
 function b64urlEncode(str){
   var bytes = new TextEncoder().encode(str), bin = "";
   for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
@@ -239,7 +248,12 @@ $("c-btn").addEventListener("click", function(){
   var v = $("c-input").value.trim();
   if (!v) { $("c-input").focus(); return; }
   var response = $("c-response").value.trim();
-  var url = location.origin + location.pathname + "#p=" + b64urlEncode(v) + (response ? "&r=" + b64urlEncode(response.slice(0,140)) : "");
+  var yesText = $("c-yes").value.trim();
+  var noText = $("c-no").value.trim();
+  var url = location.origin + location.pathname + "#p=" + b64urlEncode(v.slice(0,140))
+    + (response ? "&r=" + b64urlEncode(response.slice(0,140)) : "")
+    + (yesText ? "&y=" + b64urlEncode(yesText.slice(0,40)) : "")
+    + (noText ? "&n=" + b64urlEncode(noText.slice(0,40)) : "");
   $("c-link").value = url;
   $("c-linkbox").classList.remove("hidden");
   $("c-hint").textContent = "";
@@ -259,7 +273,7 @@ function resetNo(){
   noBtn.classList.remove("fleeing");
   noBtn.style.left = noBtn.style.top = "";
   yesBtn.style.transform = "";
-  noBtn.textContent = t().no[0];
+  noBtn.textContent = customNo || t().no[0];
 }
 function dodge(){
   var r = noBtn.getBoundingClientRect();
@@ -335,7 +349,9 @@ yesBtn.addEventListener("click", function(){
 /* --- init --- */
 customQ = readHash("p");
 customR = readHash("r");
-window.addEventListener("hashchange", function(){ customQ = readHash("p"); customR = readHash("r"); resetNo(); applyLang(); show("view-question"); });
+customYes = readHash("y");
+customNo = readHash("n");
+window.addEventListener("hashchange", function(){ customQ = readHash("p"); customR = readHash("r"); customYes = readHash("y"); customNo = readHash("n"); resetNo(); applyLang(); show("view-question"); });
 applyLang();
 show("view-question");
 })();
