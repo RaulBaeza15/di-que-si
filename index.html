@@ -169,7 +169,7 @@ var lang = (function(){
   try { var s = localStorage.getItem("dqs-lang"); if (s && T[s]) return s; } catch(e){}
   var n = (navigator.language || "es").slice(0,2).toLowerCase();
   return T[n] ? n : "es";
-})();a
+})();
 var dodgeCount = 0, customQ = null, customR = null;
 
 function t(){ return T[lang]; }
