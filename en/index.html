@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Say Yes — the trick question</title>
+<meta name="description" content="Ask the question: the YES button works, but the NO button runs away. Make your own question and share the link.">
+<link rel="canonical" href="https://raulbaeza15.github.io/di-que-si/en/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Say Yes">
+<meta property="og:title" content="Say Yes — the trick question">
+<meta property="og:description" content="The YES button works. The NO button runs away. Make your own question and share the link.">
+<meta property="og:url" content="https://raulbaeza15.github.io/di-que-si/en/">
+<meta property="og:image" content="https://github.com/RaulBaeza15/di-que-si/releases/download/v1.0.1/di-que-si-english-preview.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#fff3e8">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<style>body{background:#fff3e8;color:#3b2a25;font-family:system-ui;text-align:center;padding:25vh 2rem}</style>
+</head><body><p>Loading…</p>
+<script>
+fetch('../index.html').then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(html){
+ var doc = new DOMParser().parseFromString(html,'text/html');
+ var labels = {title:'Say Yes — the trick question',description:'Ask the question: the YES button works, but the NO button runs away. Make your own question and share the link.'};
+ doc.documentElement.lang='en'; doc.title=labels.title;
+ doc.querySelector('meta[name="description"]').content=labels.description;
+ doc.querySelector('link[rel="canonical"]').href=location.origin+location.pathname;
+ doc.querySelector('link[rel="icon"]').href='../favicon.svg';
+ var og={"og:site_name":"Say Yes","og:title":labels.title,"og:description":"The YES button works. The NO button runs away. Make your own question and share the link.","og:url":location.origin+location.pathname,"og:image":"https://github.com/RaulBaeza15/di-que-si/releases/download/v1.0.1/di-que-si-english-preview.png"};
+ Object.keys(og).forEach(function(k){doc.querySelector('meta[property="'+k+'"]').content=og[k]});
+ doc.querySelector('script[type="application/ld+json"]').textContent=doc.querySelector('script[type="application/ld+json"]').textContent.replace('"name":"Di que sí"','"name":"Say Yes"').replace('"url":"https://raulbaeza15.github.io/di-que-si/"','"url":"https://raulbaeza15.github.io/di-que-si/en/"');
+ var app=doc.querySelector('body script').textContent;
+ app=app.replace(/var lang = \(function\(\)\{[\s\S]*?\}\)\(\);/,'var lang = "en";');
+ doc.querySelector('body script').textContent=app;
+ document.open();document.write('<!DOCTYPE html>\n'+doc.documentElement.outerHTML);document.close();
+}).catch(function(){document.body.innerHTML='<p>Could not load the page. <a href="../">Open the main page</a>.</p>'});
+</script></body></html>
